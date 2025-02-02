@@ -145,6 +145,12 @@ func GenCodeForSchema(pkg Package, reqcode bool, s *Schema, packages []Package, 
 
 	tps := s.AllTypes(pkg.Prefix, defmap)
 
+	pf("const (")
+	for _, t := range tps {
+		pf("%sNSID = %q", t.Name, t.Type.id)
+	}
+	pf(")\n\n")
+
 	if err := writeDecoderRegister(buf, tps); err != nil {
 		return err
 	}
