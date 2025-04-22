@@ -147,7 +147,10 @@ func GenCodeForSchema(pkg Package, reqcode bool, s *Schema, packages []Package, 
 
 	pf("const (")
 	for _, t := range tps {
-		pf("%sNSID = %q", t.Name, t.Type.id)
+		// this seems to be the way to ignore non-top level types
+		if !strings.Contains(t.Name, "_") {
+			pf("%sNSID = %q", t.Name, t.Type.id)
+		}
 	}
 	pf(")\n\n")
 
