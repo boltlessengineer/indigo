@@ -10,7 +10,6 @@ import (
 	"github.com/bluesky-social/indigo/atproto/atclient"
 	"github.com/bluesky-social/indigo/atproto/identity"
 	"github.com/bluesky-social/indigo/cmd/relay/relay/models"
-	"github.com/bluesky-social/indigo/util/ssrf"
 )
 
 // Simple interface for doing host and account status checks.
@@ -35,7 +34,6 @@ func NewHostClient(userAgent string) *HostClient {
 	}
 	c := http.Client{
 		Timeout:   5 * time.Second,
-		Transport: ssrf.PublicOnlyTransport(),
 	}
 	return &HostClient{
 		Client:    &c,

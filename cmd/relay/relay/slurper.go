@@ -16,7 +16,6 @@ import (
 	"github.com/bluesky-social/indigo/cmd/relay/relay/models"
 	"github.com/bluesky-social/indigo/cmd/relay/stream"
 	"github.com/bluesky-social/indigo/cmd/relay/stream/schedulers/parallel"
-	"github.com/bluesky-social/indigo/util/ssrf"
 
 	"github.com/RussellLuo/slidingwindow"
 	"github.com/gorilla/websocket"
@@ -299,8 +298,8 @@ func (s *Slurper) subscribeWithRedialer(ctx context.Context, host *models.Host, 
 
 	// if this isn't a localhost / private connection, then we should enable SSRF protections
 	if !host.NoSSL {
-		netDialer := ssrf.PublicOnlyDialer()
-		d.NetDialContext = netDialer.DialContext
+		// netDialer := ssrf.PublicOnlyDialer()
+		// d.NetDialContext = netDialer.DialContext
 	}
 
 	cursor := host.LastSeq
