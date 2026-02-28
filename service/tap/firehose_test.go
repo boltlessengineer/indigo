@@ -1,4 +1,4 @@
-package main
+package tap
 
 import (
 	"testing"
@@ -7,11 +7,11 @@ import (
 	comatproto "github.com/bluesky-social/indigo/api/atproto"
 	"github.com/bluesky-social/indigo/atproto/identity"
 	"github.com/bluesky-social/indigo/atproto/syntax"
-	"github.com/bluesky-social/indigo/cmd/tap/models"
+	"github.com/bluesky-social/indigo/service/tap/models"
 )
 
 func newTestFirehoseProcessor(te *testEnv, fullNetwork bool) *FirehoseProcessor {
-	config := &TapConfig{
+	config := &Config{
 		RelayUrl:                   "wss://relay.test.example",
 		FullNetworkMode:            fullNetwork,
 		FirehoseParallelism:        1,
@@ -550,7 +550,7 @@ func TestGetCursor_NoReplay(t *testing.T) {
 
 	makeProcessor := func(te *testEnv, disableReplay bool) *FirehoseProcessor {
 		t.Helper()
-		config := &TapConfig{
+		config := &Config{
 			RelayUrl:                   relayUrl,
 			FirehoseParallelism:        1,
 			FirehoseCursorSaveInterval: 5 * time.Second,

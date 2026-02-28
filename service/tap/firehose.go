@@ -1,4 +1,4 @@
-package main
+package tap
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 	"github.com/bluesky-social/indigo/atproto/atdata"
 	"github.com/bluesky-social/indigo/atproto/repo"
 	"github.com/bluesky-social/indigo/atproto/syntax"
-	"github.com/bluesky-social/indigo/cmd/tap/models"
+	"github.com/bluesky-social/indigo/service/tap/models"
 	"github.com/bluesky-social/indigo/events"
 	"github.com/bluesky-social/indigo/events/schedulers/parallel"
 	"github.com/gorilla/websocket"
@@ -41,7 +41,7 @@ type FirehoseProcessor struct {
 	lastSeq atomic.Int64
 }
 
-func NewFirehoseProcessor(logger *slog.Logger, db *gorm.DB, events *EventManager, repos *RepoManager, config *TapConfig) *FirehoseProcessor {
+func NewFirehoseProcessor(logger *slog.Logger, db *gorm.DB, events *EventManager, repos *RepoManager, config *Config) *FirehoseProcessor {
 	return &FirehoseProcessor{
 		logger:             logger.With("component", "firehose"),
 		db:                 db,

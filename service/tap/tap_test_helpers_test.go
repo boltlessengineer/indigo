@@ -1,4 +1,4 @@
-package main
+package tap
 
 import (
 	"context"
@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/bluesky-social/indigo/atproto/identity"
-	"github.com/bluesky-social/indigo/cmd/tap/models"
+	"github.com/bluesky-social/indigo/service/tap/models"
 	"github.com/gorilla/websocket"
 	"gorm.io/gorm"
 )
@@ -74,7 +74,7 @@ func newTestEnv(t *testing.T, opts testEnvOpts) *testEnv {
 		disableAcks = true
 	}
 
-	config := &TapConfig{
+	config := &Config{
 		EventCacheSize:    cacheSize,
 		OutboxParallelism: 1,
 		DisableAcks:       disableAcks,

@@ -13,6 +13,7 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
+	"github.com/bluesky-social/indigo/service/tap"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
@@ -204,7 +205,7 @@ func runTap(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("--no-replay cannot be used with --full-network")
 	}
 
-	config := TapConfig{
+	config := tap.Config{
 		DatabaseURL:                cmd.String("db-url"),
 		DBMaxConns:                 int(cmd.Int("max-db-conn")),
 		PLCURL:                     plcUrl,
@@ -228,13 +229,13 @@ func runTap(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	logger.Info("creating tap service")
-	tap, err := NewTap(config)
+	tap, err := tap.New(config)
 	if err != nil {
 		return err
 	}
 
 	if !config.OutboxOnly {
-		go tap.crawler.Run(ctx)
+		go tap.Crawler.Run(ctx)
 	}
 
 	svcErr := make(chan error, 1)
@@ -242,7 +243,7 @@ func runTap(ctx context.Context, cmd *cli.Command) error {
 	if !config.OutboxOnly {
 		go func() {
 			logger.Info("starting firehose consumer")
-			if err := tap.firehose.Run(ctx); err != nil {
+			if err := tap.Firehose.Run(ctx); err != nil {
 				svcErr <- err
 			}
 		}()
@@ -252,7 +253,7 @@ func runTap(ctx context.Context, cmd *cli.Command) error {
 
 	go func() {
 		logger.Info("starting HTTP server", "addr", cmd.String("bind"))
-		if err := tap.server.Start(cmd.String("bind")); err != nil {
+		if err := tap.Server.Start(cmd.String("bind")); err != nil {
 			svcErr <- err
 		}
 	}()
@@ -283,7 +284,7 @@ func runTap(ctx context.Context, cmd *cli.Command) error {
 	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer shutdownCancel()
 
-	if err := tap.server.Shutdown(shutdownCtx); err != nil {
+	if err := tap.Server.Shutdown(shutdownCtx); err != nil {
 		logger.Error("error during shutdown", "error", err)
 		return err
 	}

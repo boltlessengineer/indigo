@@ -1,4 +1,4 @@
-package main
+package tap
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/bluesky-social/indigo/cmd/tap/models"
+	"github.com/bluesky-social/indigo/service/tap/models"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -28,7 +28,7 @@ type EventManager struct {
 	pendingIDs chan uint
 }
 
-func NewEventManager(logger *slog.Logger, db *gorm.DB, config *TapConfig) *EventManager {
+func NewEventManager(logger *slog.Logger, db *gorm.DB, config *Config) *EventManager {
 	return &EventManager{
 		logger:     logger.With("component", "event_manager"),
 		db:         db,

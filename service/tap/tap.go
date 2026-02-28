@@ -1,4 +1,4 @@
-package main
+package tap
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/bluesky-social/indigo/atproto/identity"
-	"github.com/bluesky-social/indigo/cmd/tap/models"
+	"github.com/bluesky-social/indigo/service/tap/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -19,19 +19,19 @@ type Tap struct {
 	db     *gorm.DB
 	logger *slog.Logger
 
-	firehose *FirehoseProcessor
+	Firehose *FirehoseProcessor
 	events   *EventManager
 	repos    *RepoManager
-	resyncer *Resyncer
-	crawler  *Crawler
+	Resyncer *Resyncer
+	Crawler  *Crawler
 
-	server *TapServer
+	Server *TapServer
 	outbox *Outbox
 
 	outboxOnly bool
 }
 
-type TapConfig struct {
+type Config struct {
 	DatabaseURL                string
 	DBMaxConns                 int
 	PLCURL                     string
@@ -54,7 +54,7 @@ type TapConfig struct {
 	RetryTimeout               time.Duration
 }
 
-func NewTap(config TapConfig) (*Tap, error) {
+func New(config Config) (*Tap, error) {
 	db, err := SetupDatabase(config.DatabaseURL, config.DBMaxConns)
 	if err != nil {
 		return nil, err
@@ -87,17 +87,17 @@ func NewTap(config TapConfig) (*Tap, error) {
 		db:     db,
 		logger: slog.Default().With("system", "tap"),
 
-		firehose:   firehose,
+		Firehose:   firehose,
 		events:     evtMngr,
 		repos:      repoMngr,
-		resyncer:   resyncer,
-		crawler:    crawler,
-		server:     server,
+		Resyncer:   resyncer,
+		Crawler:    crawler,
+		Server:     server,
 		outbox:     outbox,
 		outboxOnly: config.OutboxOnly,
 	}
 
-	if err := t.resyncer.resetPartiallyResynced(context.Background()); err != nil {
+	if err := t.Resyncer.resetPartiallyResynced(context.Background()); err != nil {
 		return nil, err
 	}
 
@@ -109,7 +109,7 @@ func (t *Tap) Run(ctx context.Context) {
 	go t.events.LoadEvents(ctx)
 
 	if !t.outboxOnly {
-		go t.resyncer.run(ctx)
+		go t.Resyncer.run(ctx)
 	}
 
 	go t.outbox.Run(ctx)

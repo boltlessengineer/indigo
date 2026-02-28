@@ -1,10 +1,10 @@
-package main
+package tap
 
 import (
 	"testing"
 	"time"
 
-	"github.com/bluesky-social/indigo/cmd/tap/models"
+	"github.com/bluesky-social/indigo/service/tap/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

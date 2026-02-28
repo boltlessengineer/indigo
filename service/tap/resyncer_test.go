@@ -1,4 +1,4 @@
-package main
+package tap
 
 import (
 	"encoding/json"
@@ -6,11 +6,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/bluesky-social/indigo/cmd/tap/models"
+	"github.com/bluesky-social/indigo/service/tap/models"
 )
 
 func newTestResyncer(te *testEnv) *Resyncer {
-	config := &TapConfig{
+	config := &Config{
 		ResyncParallelism: 1,
 		RepoFetchTimeout:  30 * time.Second,
 		EventCacheSize:    1000,

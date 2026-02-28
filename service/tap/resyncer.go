@@ -1,4 +1,4 @@
-package main
+package tap
 
 import (
 	"bytes"
@@ -15,7 +15,7 @@ import (
 	"github.com/bluesky-social/indigo/atproto/atdata"
 	repolib "github.com/bluesky-social/indigo/atproto/repo"
 	"github.com/bluesky-social/indigo/atproto/syntax"
-	"github.com/bluesky-social/indigo/cmd/tap/models"
+	"github.com/bluesky-social/indigo/service/tap/models"
 	"github.com/ipfs/go-cid"
 	"go.opentelemetry.io/otel/attribute"
 	"gorm.io/gorm"
@@ -38,7 +38,7 @@ type Resyncer struct {
 	pdsBackoffMu sync.RWMutex
 }
 
-func NewResyncer(logger *slog.Logger, db *gorm.DB, repos *RepoManager, events *EventManager, config *TapConfig) *Resyncer {
+func NewResyncer(logger *slog.Logger, db *gorm.DB, repos *RepoManager, events *EventManager, config *Config) *Resyncer {
 	return &Resyncer{
 		logger:            logger.With("component", "resyncer"),
 		db:                db,

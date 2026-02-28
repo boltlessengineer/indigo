@@ -1,4 +1,4 @@
-package main
+package tap
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 
 	comatproto "github.com/bluesky-social/indigo/api/atproto"
 	"github.com/bluesky-social/indigo/atproto/atclient"
-	"github.com/bluesky-social/indigo/cmd/tap/models"
+	"github.com/bluesky-social/indigo/service/tap/models"
 	"go.opentelemetry.io/otel/attribute"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -24,7 +24,7 @@ type Crawler struct {
 	signalCollection string
 }
 
-func NewCrawler(logger *slog.Logger, db *gorm.DB, config *TapConfig) *Crawler {
+func NewCrawler(logger *slog.Logger, db *gorm.DB, config *Config) *Crawler {
 	return &Crawler{
 		logger:           logger.With("component", "crawler"),
 		db:               db,
